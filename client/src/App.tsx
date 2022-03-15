@@ -1,58 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { PaletteMode } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { BrowserRouter } from 'react-router-dom';
+import { useTheme } from './hooks/useTheme';
+import TheLayout from './views/pages/TheLayout';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const { myTheme } = useTheme();
+    const theme = createTheme({
+        palette: {
+            mode: myTheme.palette.mode as PaletteMode,
+        },
+    });
+
+    return (
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <TheLayout />
+            </BrowserRouter>
+        </ThemeProvider>
+    );
 }
 
 export default App;
