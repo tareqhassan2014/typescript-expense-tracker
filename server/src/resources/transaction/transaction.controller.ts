@@ -24,7 +24,7 @@ const deleteTransaction = async (req: Request, res: Response) => {
     try {
         await transactionModel.findByIdAndDelete(req.params.id);
 
-        res.status(400).json({ message: 'Transaction deleted successfully' });
+        res.status(204).json({ message: 'Transaction deleted successfully' });
     } catch (error: any) {
         return res.status(500).json({ message: error.message });
     }

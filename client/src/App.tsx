@@ -1,25 +1,35 @@
-import { PaletteMode } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { BrowserRouter } from 'react-router-dom';
-import { useTheme } from './hooks/useTheme';
-import TheLayout from './views/pages/TheLayout';
+import { Container, Grid, Typography } from '@mui/material';
+import Form from './components/Form';
+import Graph from './components/Graph';
 
 function App() {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const { myTheme } = useTheme();
-    const theme = createTheme({
-        palette: {
-            mode: myTheme.palette.mode as PaletteMode,
-        },
-    });
-
     return (
-        <ThemeProvider theme={theme}>
-            <BrowserRouter>
-                <TheLayout />
-            </BrowserRouter>
-        </ThemeProvider>
+        <Container>
+            <Typography
+                align="center"
+                sx={{
+                    py: 2,
+                    color: 'common.white',
+                    bgcolor: '#1E293B',
+                    borderRadius: 2,
+                    my: 4,
+                }}
+                variant="h3"
+            >
+                Expense Tracker
+            </Typography>
+
+            <Grid container>
+                <Grid item md={6} xs={12}>
+                    <div>
+                        <Graph />
+                    </div>
+                </Grid>
+                <Grid item md={6} xs={12}>
+                    <Form />
+                </Grid>
+            </Grid>
+        </Container>
     );
 }
 
