@@ -33,7 +33,7 @@ const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    blacklist: [api.reducerPath],
+    whitelist: ['auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
