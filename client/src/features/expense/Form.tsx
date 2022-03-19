@@ -3,35 +3,37 @@ import { Box, Container, TextField, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import Select from '@mui/material/Select';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useAddTransactionMutation } from '../../app/services/apiSlice';
+import TransactionList from './TransactionList';
+
+type Inputs = {
+    name: string;
+    type: string;
+    amount: number;
+};
 
 const Form = () => {
-    const dispatch = useDispatch();
-    const [type, setType] = React.useState('investment');
+    const {
+        register,
+        handleSubmit,
+        watch,
+        resetField,
+        formState: { errors },
+    } = useForm<Inputs>();
+    const watchType = watch('type', 'savings');
+    const [addTransaction, { isLoading }] = useAddTransactionMutation();
+    const onSubmit: SubmitHandler<Inputs> = (data) => {
+        addTransaction(data);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setType(event.target.value as string);
+        resetField('name');
+        resetField('amount');
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        try {
-            const data = new FormData(event.currentTarget);
-
-            console.log({
-                email: data.get('name'),
-                password: data.get('amount'),
-                types: type,
-            });
-        } catch (err: any) {
-            console.log('====================================');
-            console.log(err.data);
-
-            console.log('====================================');
-        }
-    };
+    console.log('====================================');
+    console.log(errors.amount);
+    console.log('====================================');
 
     return (
         <Container component="main" maxWidth="xs">
@@ -40,29 +42,33 @@ const Form = () => {
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 noValidate
                 sx={{ mt: 1 }}
             >
                 <TextField
+                    error={Boolean(errors.name)}
+                    label={Boolean(errors.name) ? 'Error' : ''}
+                    helperText={errors.name?.message}
                     margin="normal"
                     required
                     fullWidth
                     id="name"
-                    name="name"
                     autoFocus
                     placeholder="Salary,House Rend, SIP"
                     sx={{ mb: 2 }}
+                    {...register('name', {
+                        required: 'Expense must have a Name',
+                    })}
                 />
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Type</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={type}
                         label="Type"
-                        onChange={handleChange}
-                        required
+                        {...register('type')}
+                        value={watchType}
                     >
                         <MenuItem value="investment">Investment</MenuItem>
                         <MenuItem value="savings">Savings</MenuItem>
@@ -70,11 +76,18 @@ const Form = () => {
                     </Select>
                 </FormControl>
                 <TextField
+                    error={Boolean(errors.amount)}
+                    label={Boolean(errors.amount) ? 'Error' : 'Amount'}
+                    helperText={errors.amount?.message}
                     margin="normal"
                     required
                     fullWidth
-                    name="amount"
                     placeholder="Amount"
+                    type="number"
+                    {...register('amount', {
+                        required: 'Amount must have!',
+                        valueAsNumber: true,
+                    })}
                 />
 
                 <LoadingButton
@@ -82,11 +95,12 @@ const Form = () => {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2, bgcolor: '#6366F1' }}
-                    loading={false}
+                    loading={isLoading}
                 >
                     Make Transaction
                 </LoadingButton>
             </Box>
+            <TransactionList />
         </Container>
     );
 };

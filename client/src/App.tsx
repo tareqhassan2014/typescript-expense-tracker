@@ -1,6 +1,6 @@
 import { Container, Grid, Typography } from '@mui/material';
-import Form from './components/Form';
-import Graph from './components/Graph';
+import Form from './features/expense/Form';
+import Graph from './features/expense/Graph';
 
 function App() {
     return (
